@@ -1,14 +1,25 @@
-import { type Config } from "tailwindcss";
-import { fontFamily } from "tailwindcss/defaultTheme";
+import type { Config } from "tailwindcss";
 
-export default {
-  content: ["./src/**/*.tsx"],
+const config: Config = {
+  content: [
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
   theme: {
     extend: {
-      fontFamily: {
-        sans: ["var(--font-sans)", ...fontFamily.sans],
+      colors: {
+        "entertainment-red": "#FC4747",
+        "entertainment-dark-blue": "#10141E",
+        "entertainment-greyish-blue": "#5A698F",
+        "entertainment-semi-dark-blue": "#161D2F",
+        "entertainment-pure-white": "#FFFFFF",
+      },
+      gridTemplateColumns: {
+        "auto-fill-100": "repeat(auto-fill, minmax(280px, 1fr))",
+        "auto-fit-100": "repeat(auto-fit, minmax(280px, 1fr))",
       },
     },
   },
-  plugins: [],
-} satisfies Config;
+  plugins: [require("@tailwindcss/forms")],
+};
+export default config;

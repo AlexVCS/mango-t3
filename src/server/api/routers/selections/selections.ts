@@ -16,18 +16,40 @@ export const selectionRouter = createTRPCRouter({
         where: {
           title: {
             mode: "insensitive",
-            contains: input.search
+            contains: input.search,
           },
-          is_trending: false
+          is_trending: false,
         },
         include: {
-          RegularThumb: true
-        }
-      })
+          RegularThumb: true,
+        },
+      });
       return {
-        status: 'success',
+        status: "success",
         results: selections.length,
-        data: selections
-      }
-    })
+        data: selections,
+      };
+    }),
+
+  getTrending: publicProcedure
+    .input(z.object({ search: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const selections = await ctx.db.selection.findMany({
+        where: {
+          title: {
+            mode: "insensitive",
+            contains: input.search,
+          },
+          is_trending: true,
+        },
+        include: {
+          TrendingThumb: true,
+        },
+      });
+      return {
+        status: "success",
+        results: selections.length,
+        data: selections,
+      };
+    }),
 });

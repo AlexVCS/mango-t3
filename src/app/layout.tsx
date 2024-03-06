@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import { ClerkProvider } from "@clerk/nextjs";
+import Navbar from "./_ui/components/Navbar";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -24,8 +25,13 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`font-sans ${inter.variable}`}>
-          <TRPCReactProvider>{children}</TRPCReactProvider>
+        <body
+          className={`font-sans ${inter.variable} bg-entertainment-dark-blue grid h-screen grid-cols-1 lg:grid-cols-[160px_1fr]`}
+        >
+          <TRPCReactProvider>
+            <Navbar />
+            {children}
+          </TRPCReactProvider>
         </body>
       </html>
     </ClerkProvider>
