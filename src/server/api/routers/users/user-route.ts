@@ -1,14 +1,22 @@
-import { createUserSchema, filterQuery } from './user-schema'
-import { createUserHandler, getUsersHandler } from './user-controller'
-import { t } from '@/lib/server/trpc-server'
+import { z } from "zod";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
-const userRouter = t.router({
-  createUser: t.procedure
-    .input(createUserSchema)
-    .mutation(({ input }) => createUserHandler({ input })),
-  getUsers: t.procedure
-    .input(filterQuery)
-    .query(({ input }) => getUsersHandler({ filterQuery: input })),
-})
+export const userRouter = createTRPCRouter({
+  getUsers: publicProcedure
+    .input(z.object({ search: z.string() }))
+    .query(({ ctx }) => {
+      return ctx.db.user.findMany();
+    }),
 
-export default userRouter
+    createUser: publicProcedure
+        .input(z.object({clerkId: z.string(), name: z.string(), email: z.string()}))
+        .mutation(({ctx, input}) => {
+            return ctx.db.user.create({
+                data: {
+                    clerk_id: input.clerkId,
+                    name: input.name,
+                    email: input.email
+                }
+            })
+        })
+});
