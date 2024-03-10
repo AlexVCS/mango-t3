@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm, type UseFormProps } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { useSignIn, useUser } from '@clerk/nextjs'
 import { useState } from 'react'
 
@@ -20,12 +20,12 @@ type FormFields = z.infer<typeof FormFieldsSchema>
 const Login = () => {
   const { isSignedIn } = useUser()
   const router = useRouter()
-  const [clerkError, setClerkError] = useState(null)
+  const [clerkError, setClerkError] = useState('')
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormFields, UseFormProps>({ resolver: zodResolver(FormFieldsSchema) })
+  } = useForm<FormFields>({ resolver: zodResolver(FormFieldsSchema) })
   const { isLoaded, signIn, setActive } = useSignIn()
 
   const loginWithEmail = async ({
@@ -51,8 +51,10 @@ const Login = () => {
       } else {
         /*Investigate why the login hasn't completed */
       }
-    } catch (err: any) {
-      setClerkError(err.errors[0].message)
+    } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      setClerkError(err.errors[0].message);
     }
   }
   if (isSignedIn) {
@@ -73,7 +75,7 @@ const Login = () => {
             Login
           </h1>
           <form
-            onSubmit={handleSubmit((d) =>
+            onSubmit={handleSubmit((d: FormFields) =>
               loginWithEmail({ emailAddress: d.email, password: d.password }),
             )}
           >
