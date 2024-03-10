@@ -17,7 +17,7 @@ const Recommended = ({ search }: { search: string }) => {
     );
   if (isLoading) return <div>Loading</div>;
   if (sectionData === undefined) return <div>Error</div>;
-  return <SectionComponent sectionData={sectionData} section="Recommended" />;
+  return <SectionComponent sectionData={sectionData} isLoading={isLoading} section="Recommended" />;
 };
 
 export default Recommended;

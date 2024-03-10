@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { searchQuery } from "./selection-schema";
 
 export const selectionRouter = createTRPCRouter({
   getAll: publicProcedure

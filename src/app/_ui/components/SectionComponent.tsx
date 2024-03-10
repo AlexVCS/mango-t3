@@ -34,7 +34,7 @@ const SectionComponent: FC<SectionComponentProps> = ({
       </h1>
       <div className="mb-8 grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-4 md:grid-cols-[repeat(auto-fill,minmax(220px,1fr))] lg:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]">
         {sectionData?.data.map((selection) => {
-          const largeThumb = selection.RegularThumb?.large.slice(8) || null;
+          const largeThumb = selection.RegularThumb?.large.slice(8) ?? null;
           if (!largeThumb) return;
           return (
             <RegularCard

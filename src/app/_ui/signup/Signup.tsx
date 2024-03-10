@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 'use client'
-import { useState, FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -7,8 +9,8 @@ import { useSignUp, useUser } from '@clerk/nextjs'
 import Link from 'next/link'
 import Image from 'next/image'
 import { zodResolver } from '@hookform/resolvers/zod'
-import queryClient from '@/lib/server/query-client'
-import { trpc } from '@/lib/server/trpc'
+import { api } from "~/trpc/react";
+
 
 const FormFieldsSchema = z
   .object({
@@ -39,26 +41,33 @@ const Signup = () => {
   const [verifying, setVerifying] = useState(false)
   const [code, setCode] = useState('')
 
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormFields>({ resolver: zodResolver(FormFieldsSchema) })
 
-  const { mutate } = trpc.createUser.useMutation({
-    onSettled: () => {
-      setName('')
-      setEmail('')
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: [
-          ['getUsers'],
-          { input: { limit: 10, page: 1 }, type: 'query' },
-        ],
-      })
-    },
-  })
+  // const { mutate } = trpc.createUser.useMutation({
+  //   onSettled: () => {
+  //     setName('')
+  //     setEmail('')
+  //   },
+  //   onSuccess: async () => {
+  //     await queryClient.invalidateQueries({
+  //       queryKey: [
+  //         ['getUsers'],
+  //         { input: { limit: 10, page: 1 }, type: 'query' },
+  //       ],
+  //     })
+  //   },
+  // })
+
+  const { mutate } = api.users.createUser.useMutation({onSuccess: () => {
+    router.refresh();
+    setName('')
+    setEmail('')
+  }})
 
   const signUpWithEmail = async ({
     emailAddress,
@@ -106,8 +115,8 @@ const Signup = () => {
         await setActive({ session: completeSignUp.createdSessionId })
         console.log(JSON.stringify(completeSignUp, null, 2))
         // ADD USERS NAME, EMAIL, AND USER ID TO OUR DATABASE
-        const clerk_id: string = completeSignUp.createdUserId || ''
-        mutate({ name, email, clerk_id })
+        const clerkId: string = completeSignUp.createdUserId ?? ''
+        mutate({ name, email, clerkId })
 
         router.push('/')
       }

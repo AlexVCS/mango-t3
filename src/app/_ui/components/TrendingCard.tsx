@@ -1,4 +1,4 @@
-import { FC } from "react"
+import { type FC } from "react"
 import Image from 'next/image'
 interface TrendingCardProps {
   id: string
@@ -17,7 +17,7 @@ const TrendingCard: FC<TrendingCardProps> = ({id, is_bookmarked, title, year, ca
       : "/icon-category-tv.svg";
 
   return (
-    <div className="relative entertainment-pure-white w-60 md:w-auto">
+    <div className="relative entertainment-pure-white w-60 md:w-auto" id={id}>
       <Image
         className="rounded-lg"
         src={imageString}

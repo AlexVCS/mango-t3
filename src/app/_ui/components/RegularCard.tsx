@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { FC } from 'react'
+import { type FC } from 'react'
 
 interface RegularCardProps {
   id: string
@@ -26,7 +26,7 @@ const RegularCard: FC<RegularCardProps> = ({
       : '/icon-category-tv.svg'
 
   return (
-    <div className="relative w-40 entertainment-pure-white md:w-56">
+    <div className="relative w-40 entertainment-pure-white md:w-56" id={id}>
       <Image
         className="mb-1 rounded-lg md:mb-2"
         src={imageString}

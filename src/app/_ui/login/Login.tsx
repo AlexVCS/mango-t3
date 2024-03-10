@@ -5,9 +5,10 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { useForm, type UseFormProps } from 'react-hook-form'
 import { useSignIn, useUser } from '@clerk/nextjs'
 import { useState } from 'react'
+
 
 const FormFieldsSchema = z.object({
   email: z.string().email(),
@@ -24,7 +25,7 @@ const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormFields>({ resolver: zodResolver(FormFieldsSchema) })
+  } = useForm<FormFields, UseFormProps>({ resolver: zodResolver(FormFieldsSchema) })
   const { isLoaded, signIn, setActive } = useSignIn()
 
   const loginWithEmail = async ({
