@@ -1,16 +1,23 @@
-import { api } from "~/trpc/server";
+"use client";
+
+import { api } from "~/trpc/react";
 import TrendingCard from "./TrendingCard";
 
-const getTrendingData = async (search: string) => {
-  const trendingData = await api.selections.getTrending.query({search})
-  return trendingData
-};
-
-const Trending = async ({ search }: { search: string }) => {
-  const trendingData = await getTrendingData(search);
-  if (trendingData && trendingData.results < 1) return;
+const Trending = ({ search }: { search: string }) => {
+  const { data: trendingData, isLoading } =
+    api.selections.getTrending.useQuery({ search });
+  if (trendingData && trendingData.results < 1)
+    return (
+      <div className="ml-4 text-entertainment-pure-white">
+        <h1 className="mb-4 text-xl font-light md:mb-6 md:text-3xl">
+          Trending
+        </h1>
+        <div>None Found</div>
+      </div>
+    );
+  if(isLoading) return <div>Loading</div>
   return (
-    <div className="text-entertainment-pure-white ml-4 overflow-scroll">
+    <div className="ml-4 overflow-scroll text-entertainment-pure-white">
       <h1 className="mb-4 text-xl font-light md:mb-6 md:text-3xl">Trending</h1>
       {trendingData ? (
         <div
