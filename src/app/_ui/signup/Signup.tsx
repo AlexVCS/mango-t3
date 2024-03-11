@@ -34,7 +34,7 @@ type FormFields = z.infer<typeof FormFieldsSchema>
 const Signup = () => {
   const { isSignedIn } = useUser()
   const { isLoaded, signUp, setActive } = useSignUp()
-  const [clerkError, setClerkError] = useState(null)
+  // const [clerkError, setClerkError] = useState(null)
   const router = useRouter()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -47,21 +47,6 @@ const Signup = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormFields>({ resolver: zodResolver(FormFieldsSchema) })
-
-  // const { mutate } = trpc.createUser.useMutation({
-  //   onSettled: () => {
-  //     setName('')
-  //     setEmail('')
-  //   },
-  //   onSuccess: async () => {
-  //     await queryClient.invalidateQueries({
-  //       queryKey: [
-  //         ['getUsers'],
-  //         { input: { limit: 10, page: 1 }, type: 'query' },
-  //       ],
-  //     })
-  //   },
-  // })
 
   const { mutate } = api.users.createUser.useMutation({onSuccess: () => {
     router.refresh();
@@ -82,21 +67,17 @@ const Signup = () => {
       return
     }
 
-    try {
-      await signUp.create({
-        emailAddress,
-        password,
-      })
-      // send the email.
-      await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
+    await signUp.create({
+      emailAddress,
+      password,
+    })
+    // send the email.
+    await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
 
-      // change the UI to our pending section.
-      setName(name)
-      setEmail(emailAddress)
-      setVerifying(true)
-    } catch (err: any) {
-      setClerkError(err.errors[0].message)
-    }
+    // change the UI to our pending section.
+    setName(name)
+    setEmail(emailAddress)
+    setVerifying(true)
   }
 
   const handleVerify = async (e: FormEvent) => {
@@ -219,7 +200,7 @@ const Signup = () => {
                 {errors.email && <p>{errors.email.message}</p>}
                 {errors.password1 && <p>{errors.password1.message}</p>}
                 {errors.password2 && <p>{errors.password2.message}</p>}
-                {clerkError && <p>{clerkError}</p>}
+                {/* {clerkError && <p>{clerkError}</p>} */}
               </h2>
               <button
                 className="w-full h-12 mb-6 text-sm font-light text-entertainment-pure-white hover:text-entertainment-dark-blue hover:bg-entertainment-pure-white bg-entertainment-red rounded-md"
