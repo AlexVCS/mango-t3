@@ -9,7 +9,7 @@ const Series = () => {
   const [search, setSearch] = useState('')
 
   const { data: sectionData, isLoading } =
-    api.selections.getRecommended.useQuery({ search });
+    api.selections.getSeries.useQuery({ search });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value)

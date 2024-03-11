@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client'
+import data from './data.json'
 const prisma = new PrismaClient()
-
-const data = require('./data.json')
 
 async function main() {
   data.map(async (selection: any) => {

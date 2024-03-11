@@ -7,7 +7,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useSignIn, useUser } from "@clerk/nextjs";
-// import { useState } from "react";
+import { hasErrorType } from "~/_utils/typeCheckers";
+import { useState } from "react";
 
 const FormFieldsSchema = z.object({
   email: z.string().email(),
@@ -19,7 +20,7 @@ type FormFields = z.infer<typeof FormFieldsSchema>;
 const Login = () => {
   const { isSignedIn } = useUser();
   const router = useRouter();
-  // const [clerkError, setClerkError] = useState("");
+  const [clerkError, setClerkError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -37,17 +38,23 @@ const Login = () => {
     if (!isLoaded) {
       return;
     }
+    try {
+      const result = await signIn.create({
+        identifier: emailAddress,
+        password,
+      });
 
-    const result = await signIn.create({
-      identifier: emailAddress,
-      password,
-    });
-
-    if (result.status === "complete") {
-      await setActive({ session: result.createdSessionId });
-      router.push("/");
-    } else {
-      throw new Error("Failed to login");
+      if (result.status === "complete") {
+        await setActive({ session: result.createdSessionId });
+        router.push("/");
+      } else {
+        throw new Error("Failed to login");
+      }
+    } catch (err) {
+      if (hasErrorType(err)) {
+        const message = err.errors[0]?.message ?? null;
+        setClerkError(message);
+      }
     }
   };
 
@@ -91,7 +98,7 @@ const Login = () => {
             <h2 className="mb-8 text-entertainment-red">
               {errors.email && <p>{errors.email.message}</p>}
               {errors.password && <p>{errors.password.message}</p>}
-              {/* {clerkError && <p>{clerkError}</p>} */}
+              {clerkError && <p>{clerkError}</p>}
             </h2>
             <button
               className="mb-6 h-12 w-full rounded-md bg-entertainment-red text-sm font-light text-entertainment-pure-white hover:bg-entertainment-pure-white hover:text-entertainment-dark-blue"
