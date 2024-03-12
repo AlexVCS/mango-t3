@@ -42,11 +42,11 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body
-          className={`font-sans ${inter.variable} bg-entertainment-dark-blue grid h-screen grid-cols-1 lg:grid-cols-[160px_1fr]`}
+          className={`font-sans ${inter.variable} grid h-screen grid-cols-1 bg-entertainment-dark-blue lg:grid-cols-[160px_1fr]`}
         >
           <TRPCReactProvider>
             <Navbar />
-            {children}
+            <div className="overflow-x-hidden">{children}</div>
           </TRPCReactProvider>
         </body>
       </html>
